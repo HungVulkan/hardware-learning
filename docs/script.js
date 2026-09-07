@@ -1,5 +1,5 @@
 /* ====== CẤU HÌNH — sửa 3 dòng này cho đúng repo của bạn ====== */
-const OWNER = "HungVulkan"; // TODO: đổi thành username GitHub của bạn
+const OWNER = "HungVulkan";
 const REPO = "hardware-learning";
 const BRANCH = "main";
 const CONTENT_PATH = "docs/content"; // nơi chứa các file .md (vì Pages đang serve từ /docs)
@@ -8,21 +8,21 @@ const CONTENT_PATH = "docs/content"; // nơi chứa các file .md (vì Pages đa
 const STRINGS = {
   vi: {
     site_title: "Nhật ký học tập Hardware",
-    site_lede: "Ghi lại quá trình tự học digital design, FPGA, kiến trúc máy tính và embedded — theo từng phase. Nội dung được đọc trực tiếp từ thư mục content/ trên GitHub.",
+    site_lede: "Ghi lại quá trình tự học digital design, FPGA, kiến trúc máy tính và embedded — theo từng phase.",
     foot_text: "Cập nhật liên tục theo từng phase.",
     loading: "Đang tải bài viết từ GitHub...",
     error: "Không tải được bài viết. Kiểm tra lại OWNER/REPO/CONTENT_PATH trong script.js.",
-    translating: "đang dịch...",
-    empty: "Chưa có bài viết nào trong content/."
+    empty: "Chưa có bài viết nào trong content/.",
+    no_translation: "Chưa có bản dịch tiếng Anh — đang hiển thị bản gốc tiếng Việt."
   },
   en: {
     site_title: "Hardware Learning Journal",
-    site_lede: "Tracking self-study progress in digital design, FPGA, computer architecture and embedded systems — phase by phase. Content is loaded directly from the content/ folder on GitHub.",
+    site_lede: "Tracking self-study progress in digital design, FPGA, computer architecture and embedded systems — phase by phase.",
     foot_text: "Updated continuously as phases progress.",
     loading: "Loading posts from GitHub...",
     error: "Could not load posts. Check OWNER/REPO/CONTENT_PATH in script.js.",
-    translating: "translating...",
-    empty: "No posts in content/ yet."
+    empty: "No posts in content/ yet.",
+    no_translation: "English translation not available yet — showing the original Vietnamese."
   }
 };
 
@@ -48,78 +48,63 @@ function parseFrontmatter(raw) {
     if (idx === -1) return;
     meta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
   });
-  return { meta, body: m[2] };
+  return { meta, body: m[2].trim() };
 }
 
-/* ---------- Tải toàn bộ post ---------- */
+function extractTitle(meta, body, fallback) {
+  const m = body.match(/^#\s+(.*)$/m);
+  return meta.title || (m ? m[1] : fallback);
+}
+
+/* ---------- Tải và ghép cặp file .md theo slug (vi + en) ---------- */
 async function loadPosts() {
   const files = await fetchFileList();
+
+  // gom theo slug: "phase-0-setup.md" -> vi, "phase-0-setup.en.md" -> en
+  const groups = {}; // slug -> { vi: file, en: file }
+  files.forEach((f) => {
+    if (f.name.endsWith(".en.md")) {
+      const slug = f.name.slice(0, -".en.md".length);
+      groups[slug] = groups[slug] || {};
+      groups[slug].en = f;
+    } else {
+      const slug = f.name.slice(0, -".md".length);
+      groups[slug] = groups[slug] || {};
+      groups[slug].vi = f;
+    }
+  });
+
   const loaded = await Promise.all(
-    files.map(async (f) => {
-      const res = await fetch(f.download_url);
-      const raw = await res.text();
-      const { meta, body } = parseFrontmatter(raw);
+    Object.entries(groups)
+      .filter(([, g]) => g.vi) // bắt buộc phải có bản VI
+      .map(async ([slug, g]) => {
+        const rawVi = await (await fetch(g.vi.download_url)).text();
+        const { meta: metaVi, body: bodyVi } = parseFrontmatter(rawVi);
 
-      // nếu file có sẵn bản EN thủ công, tách bằng dòng "<!--en-->"
-      const parts = body.split(/<!--\s*en\s*-->/i);
-      const body_vi_raw = parts[0].trim();
-      const body_en_raw = parts[1] ? parts[1].trim() : null;
+        let title_en = null;
+        let body_en_raw = null;
+        if (g.en) {
+          const rawEn = await (await fetch(g.en.download_url)).text();
+          const { meta: metaEn, body: bodyEn } = parseFrontmatter(rawEn);
+          title_en = extractTitle(metaEn, bodyEn, null);
+          body_en_raw = bodyEn;
+        }
 
-      const titleMatch = body_vi_raw.match(/^#\s+(.*)$/m);
-      const title_vi = meta.title || (titleMatch ? titleMatch[1] : f.name.replace(/\.md$/, ""));
-
-      return {
-        id: f.name.replace(/\.md$/, ""),
-        phase: meta.phase || "",
-        date: meta.date || "",
-        tags: meta.tags ? meta.tags.split(",").map((s) => s.trim()) : [],
-        title_vi,
-        body_vi_raw,
-        title_en_manual: meta.title_en || null,
-        body_en_raw_manual: body_en_raw,
-        cache: {} // { en: { title, html } }
-      };
-    })
+        return {
+          id: slug,
+          phase: metaVi.phase || "",
+          date: metaVi.date || "",
+          tags: metaVi.tags ? metaVi.tags.split(",").map((s) => s.trim()) : [],
+          title_vi: extractTitle(metaVi, bodyVi, slug),
+          body_vi_raw: bodyVi,
+          title_en,
+          body_en_raw
+        };
+      })
   );
+
   loaded.sort((a, b) => (a.date < b.date ? -1 : 1));
   return loaded;
-}
-
-/* ---------- Dịch tự động qua MyMemory (khi không có bản EN thủ công) ---------- */
-async function translateText(text, from, to) {
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.responseData && data.responseData.translatedText) {
-    return data.responseData.translatedText;
-  }
-  throw new Error("translate failed");
-}
-
-async function getRenderedContent(post, lang) {
-  if (lang === "vi") {
-    return { title: post.title_vi, html: marked.parse(post.body_vi_raw) };
-  }
-
-  // ưu tiên bản EN viết thủ công trong file .md
-  if (post.title_en_manual || post.body_en_raw_manual) {
-    return {
-      title: post.title_en_manual || post.title_vi,
-      html: marked.parse(post.body_en_raw_manual || post.body_vi_raw)
-    };
-  }
-
-  // nếu đã dịch trước đó, dùng cache
-  if (post.cache.en) return post.cache.en;
-
-  // tự dịch qua API, dịch title và body riêng
-  const [title, bodyText] = await Promise.all([
-    translateText(post.title_vi, "vi", "en"),
-    translateText(post.body_vi_raw, "vi", "en")
-  ]);
-  const result = { title, html: marked.parse(bodyText), auto: true };
-  post.cache.en = result;
-  return result;
 }
 
 /* ---------- Render ---------- */
@@ -158,7 +143,7 @@ function buildEntryEl(post) {
   return { el, h2, body, note };
 }
 
-async function renderPosts(lang) {
+function renderPosts(lang) {
   const container = document.getElementById("timeline");
   container.innerHTML = "";
 
@@ -167,28 +152,22 @@ async function renderPosts(lang) {
     return;
   }
 
-  for (const post of posts) {
+  posts.forEach((post) => {
     const { el, h2, body, note } = buildEntryEl(post);
     container.appendChild(el);
-    h2.textContent = "…";
-    body.classList.add("translating");
-    body.textContent = STRINGS[lang].translating;
 
-    try {
-      const content = await getRenderedContent(post, lang);
-      h2.textContent = content.title;
-      body.classList.remove("translating");
-      body.innerHTML = content.html;
-      if (lang === "en" && content.auto) {
-        note.textContent = "auto-translated";
-      }
-    } catch (e) {
-      h2.textContent = post.title_vi;
-      body.classList.remove("translating");
-      body.innerHTML = marked.parse(post.body_vi_raw);
-      note.textContent = "translation unavailable — showing original";
+    const hasEn = Boolean(post.body_en_raw);
+    const useEn = lang === "en" && hasEn;
+
+    h2.textContent = useEn ? post.title_en : post.title_vi;
+    body.innerHTML = marked.parse(useEn ? post.body_en_raw : post.body_vi_raw);
+
+    if (lang === "en" && !hasEn) {
+      note.textContent = STRINGS.en.no_translation;
+    } else {
+      note.textContent = "";
     }
-  }
+  });
 }
 
 function applyStrings(lang) {
@@ -199,13 +178,13 @@ function applyStrings(lang) {
   document.documentElement.lang = lang;
 }
 
-async function setLang(lang) {
+function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll(".lang-toggle .opt").forEach((opt) => {
     opt.classList.toggle("active", opt.dataset.lang === lang);
   });
   applyStrings(lang);
-  await renderPosts(lang);
+  renderPosts(lang);
 }
 
 document.getElementById("langToggle").addEventListener("click", () => {
@@ -217,7 +196,7 @@ document.getElementById("langToggle").addEventListener("click", () => {
   const container = document.getElementById("timeline");
   try {
     posts = await loadPosts();
-    await setLang("vi");
+    setLang("vi");
   } catch (e) {
     container.innerHTML = `<p class="status-msg error">${STRINGS.vi.error}</p>`;
     console.error(e);
