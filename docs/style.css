@@ -242,3 +242,28 @@ body {
   border-color: var(--ink);
   color: var(--paper);
 }
+
+.topic-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 0 0 14px;
+  background: #fbfaf6;
+}
+
+.topic-card .topic-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.topic-card p:last-child { margin-bottom: 0; }
+
+.topic-card img {
+  display: block;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  margin: 10px 0 4px;
+}

@@ -5,6 +5,18 @@ const BRANCH = "main";
 const CONTENT_PATH = "docs/content"; // nơi chứa các file .md (vì Pages đang serve từ /docs)
 /* ============================================================= */
 
+// Cho phép chèn ảnh bằng đường dẫn tương đối trong .md, ví dụ:
+// ![mô tả](images/boolean-algebra.png)
+// sẽ tự trỏ về https://raw.githubusercontent.com/OWNER/REPO/BRANCH/docs/content/images/boolean-algebra.png
+const markedRenderer = new marked.Renderer();
+markedRenderer.image = function (href, title, text) {
+  const src = /^https?:\/\//.test(href)
+    ? href
+    : `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${CONTENT_PATH}/${href}`;
+  return `<img src="${src}" alt="${text || ""}" title="${title || ""}" loading="lazy">`;
+};
+marked.setOptions({ renderer: markedRenderer });
+
 const STRINGS = {
   vi: {
     site_title: "Nhật ký học tập Hardware",
@@ -144,6 +156,35 @@ function buildEntryEl(post) {
   return { el, h2, body, note };
 }
 
+/* ---------- Gom mỗi ### thành 1 khung riêng (topic card) ---------- */
+function wrapTopicCards(bodyEl) {
+  const children = Array.from(bodyEl.children);
+  const fragment = document.createDocumentFragment();
+  let currentCard = null;
+
+  children.forEach((node) => {
+    if (node.tagName === "H3") {
+      currentCard = document.createElement("div");
+      currentCard.className = "topic-card";
+      const title = document.createElement("div");
+      title.className = "topic-title";
+      title.textContent = node.textContent;
+      currentCard.appendChild(title);
+      fragment.appendChild(currentCard);
+    } else if (node.tagName === "H2" || node.tagName === "H1") {
+      currentCard = null; // gặp heading lớn hơn thì thoát khỏi vùng khung
+      fragment.appendChild(node);
+    } else if (currentCard) {
+      currentCard.appendChild(node);
+    } else {
+      fragment.appendChild(node);
+    }
+  });
+
+  bodyEl.innerHTML = "";
+  bodyEl.appendChild(fragment);
+}
+
 function renderPosts(lang) {
   const container = document.getElementById("timeline");
   container.innerHTML = "";
@@ -162,6 +203,7 @@ function renderPosts(lang) {
 
     h2.textContent = useEn ? post.title_en : post.title_vi;
     body.innerHTML = marked.parse(useEn ? post.body_en_raw : post.body_vi_raw);
+    wrapTopicCards(body);
 
     if (lang === "en" && !hasEn) {
       note.textContent = STRINGS.en.no_translation;
