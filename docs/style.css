@@ -172,3 +172,31 @@ body {
   .timeline { padding-left: 22px; }
   .entry::before { left: -28px; }
 }
+
+.status-msg {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.status-msg.error { color: #b3452e; }
+
+.entry .body :is(h1,h2,h3) { font-size: 15px; margin: 12px 0 6px; }
+.entry .body ul { margin: 0 0 10px; padding-left: 20px; }
+.entry .body li { margin-bottom: 4px; }
+.entry .body code {
+  font-family: var(--mono);
+  background: var(--grid);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.entry .body.translating { opacity: 0.5; }
+
+.entry .translate-note {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
