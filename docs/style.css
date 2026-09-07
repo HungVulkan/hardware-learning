@@ -200,3 +200,45 @@ body {
   font-size: 11px;
   color: var(--ink-soft);
 }
+
+.phase-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  max-width: 760px;
+  margin: 0 auto 32px;
+  padding: 10px 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.phase-nav::-webkit-scrollbar { height: 4px; }
+
+.phase-pill {
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.phase-pill:hover {
+  border-color: var(--copper-soft);
+  color: var(--copper);
+}
+
+.phase-pill.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}

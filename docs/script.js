@@ -111,6 +111,7 @@ async function loadPosts() {
 function buildEntryEl(post) {
   const el = document.createElement("article");
   el.className = "entry done";
+  el.id = `post-${post.id}`;
 
   const meta = document.createElement("div");
   meta.className = "entry-meta";
@@ -170,6 +171,49 @@ function renderPosts(lang) {
   });
 }
 
+/* ---------- Thanh nav chuyển nhanh giữa các phase ---------- */
+let scrollObserver = null;
+
+function buildPhaseNav() {
+  const nav = document.getElementById("phaseNav");
+  nav.innerHTML = "";
+
+  posts.forEach((post) => {
+    const pill = document.createElement("button");
+    pill.className = "phase-pill";
+    pill.textContent = post.phase || post.id;
+    pill.dataset.target = `post-${post.id}`;
+    pill.addEventListener("click", () => {
+      document.getElementById(`post-${post.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    nav.appendChild(pill);
+  });
+
+  setupScrollSpy();
+}
+
+function setupScrollSpy() {
+  if (scrollObserver) scrollObserver.disconnect();
+
+  scrollObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        document.querySelectorAll(".phase-pill").forEach((pill) => {
+          pill.classList.toggle("active", pill.dataset.target === id);
+        });
+      });
+    },
+    { rootMargin: "-45% 0px -45% 0px" } // coi entry là "đang xem" khi ở giữa viewport
+  );
+
+  posts.forEach((post) => {
+    const el = document.getElementById(`post-${post.id}`);
+    if (el) scrollObserver.observe(el);
+  });
+}
+
 function applyStrings(lang) {
   document.querySelectorAll("[data-t]").forEach((elm) => {
     const key = elm.getAttribute("data-t");
@@ -196,6 +240,7 @@ document.getElementById("langToggle").addEventListener("click", () => {
   const container = document.getElementById("timeline");
   try {
     posts = await loadPosts();
+    buildPhaseNav();
     setLang("vi");
   } catch (e) {
     container.innerHTML = `<p class="status-msg error">${STRINGS.vi.error}</p>`;
