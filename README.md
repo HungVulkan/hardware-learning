@@ -19,3 +19,14 @@ It contains source RTL codes, self-checking testbenches, simulation waveforms, a
 ├── 📁 computer-architecture/  # CPU datapaths, control logic, RV32I ISA documentation
 ├── 📁 embedded/               # Bare-metal C drivers, CMSIS-DSP, and FreeRTOS applications
 └── 📁 docs/                   # Waveforms, architectural diagrams, reports, and certificates
+```
+
+---
+## 🛠️ Toolchains & Hardware
+
+| Domain | Tools & Hardware |
+| :--- | :--- |
+| **EDA & Simulation** | Icarus Verilog (`iverilog`), GTKWave, ModelSim / QuestaSim, EDA Playground |
+| **FPGA Toolchains** | Gowin EDA / Intel Quartus Prime / Xilinx Vivado |
+| **Embedded & Firmware** | VS Code, GCC Toolchains (ARM/RISC-V), STM32CubeIDE / Keil MDK, OpenOCD |
+| **Target Hardware** | FPGA Development Boards (Tang Nano / DE1-SoC), STM32 (ARM Cortex-M) |
