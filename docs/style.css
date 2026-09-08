@@ -29,9 +29,11 @@ body {
 
 .toggle-wrap {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
   padding: 20px 0 0;
   max-width: 720px;
   margin: 0 auto;
@@ -40,13 +42,45 @@ body {
 .contacts {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 6px;
+  gap: 8px;
 }
 
-.contacts img {
-  display: block;
-  height: 20px;
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 5px 12px 5px 10px;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.contact-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--copper-soft);
+  flex: 0 0 auto;
+}
+
+.contact-pill:hover {
+  border-color: var(--copper);
+  color: var(--copper-dark, var(--copper));
+  background: #fbfaf6;
+}
+
+.contact-pill:hover .dot {
+  background: var(--copper);
+}
+
+@media (max-width: 480px) {
+  .toggle-wrap { justify-content: flex-start; }
+  .contacts { order: 2; }
+  .lang-toggle { order: 1; }
 }
 
 .lang-toggle {
