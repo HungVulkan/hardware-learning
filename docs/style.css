@@ -29,10 +29,24 @@ body {
 
 .toggle-wrap {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
   padding: 20px 0 0;
   max-width: 720px;
   margin: 0 auto;
+}
+
+.contacts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.contacts img {
+  display: block;
+  height: 20px;
 }
 
 .lang-toggle {
