@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hardware Learning — Nhật ký học tập</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hardware Learning — Nhật ký học tập</title>
+<link rel="stylesheet" href="style.css">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [["$", "$"], ["\\(", "\\)"]],
+      displayMath: [["\\[", "\\]"], ["$$", "$$"]]
+    }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
 </head>
-
 <body>
 
   <div class="toggle-wrap">
@@ -22,7 +29,7 @@
       <a class="contact-pill" href="https://www.linkedin.com/in/quochungvu2309/" target="_blank" rel="noopener">
         <span class="dot"></span>LinkedIn
       </a>
-      <a class="contact-pill" href="https://www.facebook.com/vqhhcmus" target="_blank" rel="noopener">
+      <a class="contact-pill" href="https://www.facebook.com/vqhcmus" target="_blank" rel="noopener">
         <span class="dot"></span>Facebook
       </a>
     </div>
@@ -35,8 +42,7 @@
   <header class="masthead">
     <div class="masthead-label">// hardware-learning</div>
     <h1 data-t="site_title">Nhật ký học tập Hardware</h1>
-    <p class="lede" data-t="site_lede">Ghi lại quá trình tự học digital design, FPGA, kiến trúc máy tính và embedded —
-      theo từng phase. Nội dung được đọc trực tiếp từ thư mục <code>content/</code> trên GitHub.</p>
+    <p class="lede" data-t="site_lede">Ghi lại quá trình tự học digital design, FPGA, kiến trúc máy tính và embedded — theo từng phase. Nội dung được đọc trực tiếp từ thư mục <code>content/</code> trên GitHub.</p>
   </header>
 
   <nav class="phase-nav" id="phaseNav"></nav>
@@ -47,10 +53,9 @@
 
   <footer class="foot">
     <span data-t="foot_text">Cập nhật liên tục theo từng phase.</span>
-    <a href="https://github.com/HungVulkan/hardware-learning" id="repoLink" target="_blank" rel="noopener">GitHub →</a>
+    <a href="https://github.com/" id="repoLink" target="_blank" rel="noopener">GitHub →</a>
   </footer>
 
   <script src="script.js"></script>
 </body>
-
 </html>

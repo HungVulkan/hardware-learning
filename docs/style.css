@@ -315,3 +315,13 @@ body {
   border: 1px solid var(--line);
   margin: 10px 0 4px;
 }
+
+.topic-card h4 {
+  font-size: 14px;
+  margin: 12px 0 6px;
+  color: var(--ink);
+}
+
+.topic-card mjx-container {
+  font-size: 95% !important;
+}

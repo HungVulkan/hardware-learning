@@ -211,6 +211,11 @@ function renderPosts(lang) {
       note.textContent = "";
     }
   });
+
+  // render công thức LaTeX ($..$ và \[..\]) sau khi nội dung đã lên trang
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise([container]).catch((e) => console.error("MathJax error:", e));
+  }
 }
 
 /* ---------- Thanh nav chuyển nhanh giữa các phase ---------- */
