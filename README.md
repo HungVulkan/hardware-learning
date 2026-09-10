@@ -8,7 +8,7 @@ It contains source RTL codes, self-checking testbenches, simulation waveforms, a
 - Write synthesizable RTL code, eliminate latch inferences, and implement robust finite state machines (FSMs).
 - Develop self-checking testbenches, debug waveforms, and verify designs on real FPGA silicon.
 - Design a single-cycle/pipelined **RISC-V (RV32I) CPU core**, integrate standard on-chip bus interconnects (APB / AXI4-Lite), and build multi-tasking bare-metal/RTOS firmware on ARM Cortex-M microcontrollers.
-## 📂 Repository Structure
+## Repository Structure
 
 ```text
 ├── 📁 digital-design/         # Combinational/sequential logic analysis, ALU, FSM (Nand2Tetris)
@@ -22,7 +22,7 @@ It contains source RTL codes, self-checking testbenches, simulation waveforms, a
 ```
 
 ---
-## 🛠️ Toolchains & Hardware
+## Toolchains & Hardware
 
 | Domain | Tools & Hardware |
 | :--- | :--- |
