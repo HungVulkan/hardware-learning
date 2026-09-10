@@ -9,7 +9,8 @@ Nguồn: Nand2Tetris (official course).
 
 ### Boolean algebra; AND / OR / NOT; NAND / NOR; XOR / XNOR
 Đại số Boolean là hệ thống đại số thao tác trên tập giá trị nhị phân chỉ gồm 2 mức logic: 0 (False / Low / mức điện áp thấp) và 1 (True / High / mức điện áp cao).
-## Các định luật then chốt cần nắm:
+
+#### Các định luật then chốt cần nắm:
 
 - **Giao hoán & Kết hợp:** Tương tự số học thông thường
   \[
@@ -46,10 +47,9 @@ Nguồn: Nand2Tetris (official course).
   \]
 
 Các cổng logic cơ bản và cách kết hợp chúng để biểu diễn mọi hàm boolean. NAND và NOR là 2 cổng vạn năng, chỉ cần 1 loại là tạo ra được tất cả cổng còn lại.
-Cổng NOT: 
- $Q = \overline{A}$ hoặc $Q = A'$
- Bảng chân trị: 
+Cổng NOT: $Q = \overline{A}$ hoặc $Q = A'$
 
+Bảng chân trị:
 
 ![Bảng chân trị các cổng logic cơ bản](images/basic-gates.png)
 
