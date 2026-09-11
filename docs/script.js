@@ -17,6 +17,14 @@ markedRenderer.image = function (href, title, text) {
 };
 marked.setOptions({ renderer: markedRenderer });
 
+// Markdown coi \ trước [ ] ( ) là ký tự escape và sẽ xóa mất dấu \,
+// nên phải đổi \[ .. \] -> $$ .. $$ và \( .. \) -> $ .. $ TRƯỚC khi đưa qua marked.parse.
+function protectMathDelimiters(text) {
+  text = text.replace(/\\\[([\s\S]*?)\\\]/g, (_, inner) => `$$${inner}$$`);
+  text = text.replace(/\\\(([\s\S]*?)\\\)/g, (_, inner) => `$${inner}$`);
+  return text;
+}
+
 const STRINGS = {
   vi: {
     site_title: "Nhật ký học tập Hardware",
@@ -202,7 +210,7 @@ function renderPosts(lang) {
     const useEn = lang === "en" && hasEn;
 
     h2.textContent = useEn ? post.title_en : post.title_vi;
-    body.innerHTML = marked.parse(useEn ? post.body_en_raw : post.body_vi_raw);
+    body.innerHTML = marked.parse(protectMathDelimiters(useEn ? post.body_en_raw : post.body_vi_raw));
     wrapTopicCards(body);
 
     if (lang === "en" && !hasEn) {
