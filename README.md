@@ -1,4 +1,5 @@
 # hardware-learning
+[Blog Link](https://hungvulkan.github.io/hardware-learning/)
 This repository documents my structured engineering journey covering **Digital Logic Design**, **Verilog/SystemVerilog RTL**, **FPGA Prototyping**, **Computer Architecture (RISC-V)**, and **Embedded Systems (ARM Cortex-M & FreeRTOS)**.
 
 It contains source RTL codes, self-checking testbenches, simulation waveforms, architecture block diagrams, and hardware deployment demonstrations.
