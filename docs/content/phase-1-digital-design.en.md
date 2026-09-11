@@ -13,12 +13,6 @@ Boolean algebra is an algebraic system that operates on a binary set of values c
 
 #### Key Laws to Master:
 
-### Boolean algebra; AND / OR / NOT; NAND / NOR; XOR / XNOR
-
-Boolean algebra is an algebraic system that operates on a binary set of values consisting of only two logic levels: **0** (False / Low / low voltage level) and **1** (True / High / high voltage level).
-
-#### Key Laws to Master:
-
 * **Commutative & Associative Laws:** Similar to ordinary arithmetic:
   $$A \cdot B = B \cdot A$$
   $$A + B = B + A$$
